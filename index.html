@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>tetris</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div id="startscreen">
+    <div>press anywhere to start</div>
+    <img src="./Tetris__2019__logo.svg">
+  </div>
+  <div id="gameoverscreen">
+    <div> Game Over</div>
+    <div id="restart"> Restart</div>
+  </div>
+
+  <div id="scoreboard">
+    score : <span class="score"></span>
+  </div>
+  <canvas id="tetris" width="300" height="600"></canvas>
+
+  <div class="butt">
+    <button id="left">&#10229;</button>
+    <button id="down">&#8595;</button>
+    <button id="right">&#8594;</button>
+  </div>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
