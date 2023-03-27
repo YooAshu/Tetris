@@ -618,6 +618,7 @@ function gameover() {
       falling = false
       clear = true
       tetrismp3.pause()
+      tetrismp3.currentTime = 0
       gover.play()
     }
   }
