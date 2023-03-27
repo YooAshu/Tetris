@@ -123,7 +123,7 @@ flex-direction: row-reverse;
 }
 @media screen and (max-width:450px){
   body{
-    justify-content: space-around;
+    justify-content: center;
     }
     
   #tetris{
@@ -137,6 +137,7 @@ flex-direction: row-reverse;
   .butt{
     visibility:unset;
      display: flex;
+    margin:10px 0;
   }
   #gameoverscreen.popup{
     width: 76%;
