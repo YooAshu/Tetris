@@ -151,7 +151,11 @@ flex-direction: row-reverse;
   .butt{
     visibility:unset;
      display: flex;
+<<<<<<< HEAD
      margin:20px 0;
+=======
+    margin:10px 0;
+>>>>>>> origin/main
   }
   #gameoverscreen.popup{
     width: 76%;
