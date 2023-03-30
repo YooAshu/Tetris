@@ -2,6 +2,7 @@ let canvas = document.getElementById('tetris')
 let gameoverscreen = document.getElementById('gameoverscreen')
 let startscreen = document.getElementById('startscreen')
 let restart = document.getElementById('restart')
+let pausebutton = document.getElementById('pause')
 let body = document.getElementsByTagName('body')[0]
 let ctx = canvas.getContext('2d')
 let canvaswidth = canvas.width
@@ -11,6 +12,7 @@ let col = 10
 let leftmove = true
 let rightmove = true
 let downmove = true
+let pause = true
 let tetrismp3 = new Audio('./tetris.mp3')
 let move = new Audio('./move.mp3')
 let line = new Audio('./line.mp3')
@@ -25,7 +27,6 @@ let down = document.getElementById('down')
 let score = document.getElementsByClassName('score')[0]
 let cscore = 0
 score.innerHTML = cscore
-let freezedy = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
 // ctx scale is 30 means if i put 1 unit to be coloured black 30 unit of the canvas will be coloured black
 ctx.scale(30, 30)
 
@@ -188,7 +189,6 @@ let fallingshape = [
 //currentshape is randomly chosen shape, and rot =0 is the first rotation of currently chosen shape,currentshape[rot=1] is 2nd shape of chosen shape
 
 let shapes = [Ishape, Oshape, Zshape, Sshape, Tshape, Lshape, Jshape]
-//let shapes = [Oshape, Ishape]
 let ran = Math.floor(Math.random() * shapes.length)
 let currentshape = shapes[ran]
 let rot = 0
@@ -204,6 +204,7 @@ function main(currentTime) {
   const differncebtwneachrender = (currentTime - lastRenderTime) / 1000
   if (differncebtwneachrender < 1 / speed) return
   lastRenderTime = currentTime
+
 
   stop()
 
@@ -295,7 +296,41 @@ function rotate() {
   if (rot == 4) {
     rot = 0
   }
+  for (t = 0; t < fallingshape[rot].length; t++) {
+    if (freezedxy.some(e => e.x == fallingshape[rot][t].x && e.y == fallingshape[rot][t].y)) {
+      try {
+
+        if (fallingshape[rot][t + 1].x > fallingshape[rot][t].x || fallingshape[rot][t + 2].x > fallingshape[rot][t].x) {
+          for (j = 0; j < fallingshape[rot].length; j++) {
+            fallingshape[rot][j].x += 1
+          }
+          erase()
+          rendershape()
+        }
+      }
+      catch (err) {
+        console.log('lol')
+      }
+    }
+  }
+  for (t = 0; t < fallingshape[rot].length; t++) {
+    if (freezedxy.some(e => e.x == fallingshape[rot][t].x && e.y == fallingshape[rot][t].y)) {
+      try {
+        if (fallingshape[rot][t - 1].x < fallingshape[rot][t].x || fallingshape[rot][t - 2].x < fallingshape[rot][t].x) {
+          for (j = 0; j < fallingshape[rot].length; j++) {
+            fallingshape[rot][j].x -= 1
+          }
+          erase()
+          rendershape()
+        }
+      }
+      catch (err) {
+        console.log('lol')
+      }
+    }
+  }
   for (i = 0; i < fallingshape[rot].length; i++) {
+
     if (fallingshape[rot][i].x == -2) {
       for (j = 0; j < fallingshape[rot].length; j++) {
         fallingshape[rot][j].x += 2
@@ -341,19 +376,21 @@ function rotate() {
     }
 
 
+
   }
 }
 document.body.onkeyup = function(e) {
-  if (e.key == " " ||
+  if ((e.key == " " ||
     e.code == "Space" ||
-    e.keyCode == 32
+    e.keyCode == 32) && !pause
   ) {
     rotate()
   }
 }
 body.addEventListener('click', function() {
-
-  rotate()
+  if (!pause) {
+    rotate()
+  }
 
 })
 // all the cords of shapes which are the bottom stopped will be stored in this array freezedxy
@@ -363,6 +400,7 @@ let freezedxy = []
 function stop() {
 
   for (i = 0; i < fallingshape[rot].length; i++) {
+
     if (fallingshape[rot][i].y == 19) {
       rendershape()
       land.play()
@@ -370,7 +408,7 @@ function stop() {
         freezedxy.push({ x: (fallingshape[rot][k].x), y: (fallingshape[rot][k].y) })
       }
 
-removeline()
+      removeline()
       fallingshape = [
         [], [], [], []
       ]
@@ -426,7 +464,7 @@ function blockmoveleft() {
     }
   }
 
-  if (leftmove) {
+  if (leftmove && !pause) {
     erase()
     move.play()
     for (i = 0; i < fallingshape.length; i++) {
@@ -459,7 +497,7 @@ function blockmoveright() {
     }
   }
 
-  if (rightmove) {
+  if (rightmove && !pause) {
     erase()
     move.play()
     for (i = 0; i < fallingshape.length; i++) {
@@ -491,7 +529,7 @@ function blockmovedown() {
     }
   }
 
-  if (downmove) {
+  if (downmove && !pause) {
     erase()
     move.play()
     for (i = 0; i < fallingshape.length; i++) {
@@ -547,32 +585,21 @@ setInterval(function() {
 // }, 700)
 
 let removingline;
-let deleteline = false
 // remove the lines which are filled
 function removeline() {
-  for (n = 0; n < freezedy.length; n++) {
-    freezedy[n] = freezedxy.filter(obj => obj.y == 19 - n);
 
-  }
-  for (m = 0; m < freezedy.length; m++) {
 
-    if (freezedy[m].length == 10) {
-      deleteline = true
-      removingline = m
+  for (n = 19; n > 0; n--) {
+    if (freezedxy.filter(e => e.y == n).length == 10) {
+      removingline = n
       cscore += 10
       score.innerHTML = cscore
-      freezedxy = freezedxy.filter(obj => obj.y != 19 - m)
+      freezedxy = freezedxy.filter(obj => obj.y != n)
       setTimeout(function() {
-        // for (o = 0; o <= 9; o++) {
-        //  ctx.fillStyle = '#eeecec'
-        //ctx.fillRect(freezedy[removingline][o].x, freezedy[removingline][o].y, 1, 1)
 
-        // }
         line.play()
         ctx.fillStyle = '#eeecec'
-        ctx.fillRect(0, 19 - removingline, 10, 1)
-        freezedy[removingline] = []
-        deleteline = false
+        ctx.fillRect(0, removingline, 10, 1)
         movefreezedblocksdown()
 
 
@@ -581,9 +608,7 @@ function removeline() {
     }
 
   }
-  if (deleteline) {
 
-  }
 
 }
 // decrease y lvl of remaining lines by 1
@@ -594,7 +619,7 @@ function movefreezedblocksdown() {
       ctx.fillRect(freezedxy[c].x, freezedxy[c].y, 1, 1)
     }
     for (s = 0; s < freezedxy.length; s++) {
-      if (freezedxy[s].y < 19 - removingline) {
+      if (freezedxy[s].y < removingline) {
         freezedxy[s].y += 1
       }
     }
@@ -616,6 +641,8 @@ function gameover() {
   for (z = 0; z < freezedxy.length; z++) {
     if (freezedxy[z].y == 0) {
       falling = false
+      speed = 0
+      pause = true
       clear = true
       tetrismp3.pause()
       gover.play()
@@ -629,7 +656,7 @@ function gameover() {
       ctx.lineWidth = 0.01;
       ctx.strokeRect(freezedxy[j].x, freezedxy[j].y, 1, 1)
     }
-    rendershape()
+    //rendershape()
     gameoverscreen.classList.add('popup')
 
   }
@@ -639,6 +666,7 @@ startscreen.onclick = function() {
   startscreen.classList.add('gamestartted')
   speed = 10
   falling = true
+  pause = false
   tetrismp3.play()
 }
 
@@ -652,9 +680,30 @@ restart.onclick = function() {
       ctx.fillRect(freezedxy[j].x, freezedxy[j].y, 1, 1)
     }
     falling = true
+    speed = 10
+    pause = false
     tetrismp3.play()
     freezedxy = []
     cscore = 0
     score.innerHTML = cscore
   }, 200)
 }
+pausebutton.onclick = function() {
+  if (!pause) {
+    speed = 0
+    falling = false
+    pausebutton.innerHTML = `<i class="fa fa-play-circle" aria-hidden="true"></i>`
+    tetrismp3.pause()
+    rendershape()
+    pause = true
+  }
+  else {
+    speed = 10
+    falling = true
+    pausebutton.innerHTML = ` <i class="fa fa-pause-circle" aria-hidden="true"></i>`
+    tetrismp3.play()
+    pause = false
+  }
+  event.stopPropagation();
+}
+// will check if the new rotated block is inside freezed blocks if it is it will move that 

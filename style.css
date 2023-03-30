@@ -12,7 +12,7 @@ body{
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
 }
 #tetris{
   background-color: #eeecec;
@@ -28,10 +28,14 @@ body{
   visibility:hidden;
 }
 .butt button{
-  width: 15%;
+ width: 15%;
     aspect-ratio: 1;
-  font-size: 20px;
-
+    font-size: 20px;
+    background: unset;
+    border: none;
+}
+.butt button svg{
+  filter: drop-shadow(4px 6px 2px rgb(0 0 0 / 0.4));
 }
 #scoreboard{
   width: 15vw;
@@ -108,6 +112,7 @@ flex-direction: row-reverse;
   flex-direction: column;
     justify-content: center;
     align-items: center;
+  z-index: 1;
 }
 #startscreen img{
   width: 25%;
@@ -121,9 +126,18 @@ flex-direction: row-reverse;
     margin: 20px 0;
     text-align: center;
 }
+#pause{
+      position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 50px;
+    height: 50px;
+    font-size: 36px;
+    text-align: center;
+}
 @media screen and (max-width:450px){
   body{
-    justify-content: space-around;
+    justify-content: center;
     }
     
   #tetris{
@@ -137,6 +151,7 @@ flex-direction: row-reverse;
   .butt{
     visibility:unset;
      display: flex;
+     margin:20px 0;
   }
   #gameoverscreen.popup{
     width: 76%;
@@ -145,10 +160,10 @@ flex-direction: row-reverse;
   #startscreen img{
   width: 90%;
 }
-}
 
-#gameoverscreen.popup div:nth-child(2){
- color: black;
+
+  #gameoverscreen.popup div:nth-child(2){
+    color: black;
     background: white;
     width: 50%;
     aspect-ratio: 4/1;
@@ -157,11 +172,8 @@ flex-direction: row-reverse;
     align-items: center;
     border-radius: 10px;
 }
-  #startscreen{
-  width: 90%;
-  
-  }
 }
+
 @media screen and (min-width:450px) and (max-width:700px){
   #scoreboard{
   width: 35vw;
