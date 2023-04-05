@@ -7,8 +7,6 @@ let body = document.getElementsByTagName('body')[0]
 let ctx = canvas.getContext('2d')
 let canvaswidth = canvas.width
 let canvasheight = canvas.height
-let rows = 20
-let col = 10
 let leftmove = true
 let rightmove = true
 let downmove = true
@@ -188,6 +186,7 @@ let fallingshape = [
 
 //currentshape is randomly chosen shape, and rot =0 is the first rotation of currently chosen shape,currentshape[rot=1] is 2nd shape of chosen shape
 
+// let shapes = [Ishape, Oshape]
 let shapes = [Ishape, Oshape, Zshape, Sshape, Tshape, Lshape, Jshape]
 let ran = Math.floor(Math.random() * shapes.length)
 let currentshape = shapes[ran]
@@ -204,6 +203,7 @@ function main(currentTime) {
   const differncebtwneachrender = (currentTime - lastRenderTime) / 1000
   if (differncebtwneachrender < 1 / speed) return
   lastRenderTime = currentTime
+
 
 
   stop()
@@ -296,6 +296,7 @@ function rotate() {
   if (rot == 4) {
     rot = 0
   }
+  //after rotation shapes sometimes get inside the freezed shapes to prevent that the code is , if x cord of the diffused block's next block is greater than x cord of diffused block whole shape will move 1 xcord forward
   for (t = 0; t < fallingshape[rot].length; t++) {
     if (freezedxy.some(e => e.x == fallingshape[rot][t].x && e.y == fallingshape[rot][t].y)) {
       try {
@@ -329,6 +330,7 @@ function rotate() {
       }
     }
   }
+  // after rotation if the shape is outside of the canvas it will inc or decrease x cord of all blocks
   for (i = 0; i < fallingshape[rot].length; i++) {
 
     if (fallingshape[rot][i].x == -2) {
@@ -347,7 +349,11 @@ function rotate() {
       rendershape()
       break
     }
-    else if (fallingshape[rot][i].x == 12) {
+  }
+  for (i = fallingshape[rot].length - 1; i >= 0; i--) {
+
+
+    if (fallingshape[rot][i].x == 12) {
       for (j = 0; j < fallingshape[rot].length; j++) {
         fallingshape[rot][j].x -= 3
 
@@ -375,21 +381,25 @@ function rotate() {
       break
     }
 
-
-
   }
+
 }
+
+let rota = true
 document.body.onkeyup = function(e) {
-  if ((e.key == " " ||
-    e.code == "Space" ||
-    e.keyCode == 32) && !pause
-  ) {
-    rotate()
+  if (e.keyCode == 32 && !pause) {
+
+    if (rota) { rotate() }
+    else { console.log(2) }
+
+
   }
 }
 body.addEventListener('click', function() {
   if (!pause) {
-    rotate()
+    if (rota) { rotate() }
+    else { console.log(2) }
+
   }
 
 })
@@ -577,12 +587,95 @@ setInterval(function() {
   if (falling) {
     erase()
     movedown()
+    checkrotation()
 
   }
 }, 1000 / s)
-// setInterval(function() {
-//   removeline()
-// }, 700)
+//function to check if the shape should be rotated or not that is if the falling shape is between freezed blocks and dont have space for the new rotated shape
+function checkrotation() {
+  for (p = fallingshape[rot].length - 1; p >= 0; p--) {
+    if ((fallingshape[rot][p].x == 8 || fallingshape[rot][p].x == 9) && ran != 0) {
+      if (freezedxy.some(e => (e.x == 7 || e.x == 8) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1))) {
+        rota = false
+        break
+      }
+      else {
+        rota = true
+      }
+    }
+
+    else if ((fallingshape[rot][p].x == 9 || fallingshape[rot][p].x == 8 || fallingshape[rot][p].x == 7) && ran == 0) {
+      if (freezedxy.some(e => (e.x == 8 || e.x == 7 || e.x == 6) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1))) {
+        rota = false
+        break
+      }
+      else {
+        rota = true
+      }
+    }
+
+    else {
+      rota = true
+      break
+    }
+  }
+  for (p = fallingshape[rot].length - 1; p >= 0; p--) {
+    if ((fallingshape[rot][p].x == 0 || fallingshape[rot][p].x == 1) && ran != 0) {
+      if (freezedxy.some(e => (e.x == 1 || e.x == 2) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1))) {
+        rota = false
+        break
+      }
+      else {
+        rota = true
+      }
+    }
+
+    else if ((fallingshape[rot][p].x == 0 || fallingshape[rot][p].x == 1 || fallingshape[rot][p].x == 2) && ran == 0) {
+      if (freezedxy.some(e => (e.x == 1 || e.x == 2 || e.x == 3) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1))) {
+        rota = false
+        break
+      }
+      else {
+        rota = true
+      }
+    }
+
+    else {
+      rota = true
+      break
+    }
+  }
+  for (p = fallingshape[rot].length - 1; p >= 0; p--) {
+
+    if (freezedxy.some(e => e.x == fallingshape[rot][p].x - 1 && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) &&
+      freezedxy.some(e => e.x == fallingshape[rot][p].x + 2 && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) && ran != 0) {
+      rota = false
+      break
+    }
+    else if (freezedxy.some(e => e.x == fallingshape[rot][p].x - 1 && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) &&
+      freezedxy.some(e => (e.x == fallingshape[rot][p].x + 3 || e.x == fallingshape[rot][p].x + 2 || e.x == fallingshape[rot][p].x + 1) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) && ran == 0) {
+      rota = false
+      break
+    }
+    else if (freezedxy.some(e => e.x == fallingshape[rot][p].x + 1 && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) &&
+      freezedxy.some(e => (e.x == fallingshape[rot][p].x - 3 || e.x == fallingshape[rot][p].x - 2) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) && ran == 0) {
+      rota = false
+      break
+    }
+    else if (freezedxy.some(e => e.x == fallingshape[rot][p].x + 2 && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) &&
+      freezedxy.some(e => (e.x == fallingshape[rot][p].x - 2) && (e.y == fallingshape[rot][p].y || e.y == fallingshape[rot][p].y + 1)) && ran == 0) {
+      rota = false
+      break
+    }
+    else {
+      rota = true
+
+    }
+
+
+  }
+
+}
 
 let removingline;
 // remove the lines which are filled
