@@ -1,5 +1,7 @@
 let canvas = document.getElementById('tetris')
 let gameoverscreen = document.getElementById('gameoverscreen')
+let resumescreen = document.getElementById('resumescreen')
+let resume = document.getElementById('resume')
 let startscreen = document.getElementById('startscreen')
 let restart = document.getElementById('restart')
 let pausebutton = document.getElementById('pause')
@@ -782,7 +784,13 @@ restart.onclick = function() {
     score.innerHTML = cscore
   }, 200)
 }
-pausebutton.onclick = function() {
+pausebutton.onclick = e => {
+  pauseGame()
+  e.stopPropagation();
+}
+
+
+function pauseGame() {
   if (!pause) {
     speed = 0
     falling = false
@@ -790,6 +798,7 @@ pausebutton.onclick = function() {
     tetrismp3.pause()
     rendershape()
     pause = true
+    resumescreen.classList.add('popup')
   }
   else {
     speed = 10
@@ -797,7 +806,41 @@ pausebutton.onclick = function() {
     pausebutton.innerHTML = ` <i class="fa fa-pause-circle" aria-hidden="true"></i>`
     tetrismp3.play()
     pause = false
+    resumescreen.classList.remove('popup')
   }
-  event.stopPropagation();
+
 }
-// will check if the new rotated block is inside freezed blocks if it is it will move that 
+
+// to pause game when tab is switched
+window.addEventListener("blur", e => {
+  if (!pause) {
+
+    speed = 0
+    falling = false
+    pausebutton.innerHTML = `<i class="fa fa-play-circle" aria-hidden="true"></i>`
+    tetrismp3.pause()
+    rendershape()
+    pause = true
+    resumescreen.classList.add('popup')
+  }
+})
+window.addEventListener("focus", e => {
+  if (!pause) {
+
+    speed = 10
+    falling = true
+    pausebutton.innerHTML = ` <i class="fa fa-pause-circle" aria-hidden="true"></i>`
+    tetrismp3.play()
+    pause = false
+  }
+})
+
+resume.onclick = e => {
+  resumescreen.classList.remove('popup')
+  speed = 10
+  falling = true
+  pausebutton.innerHTML = ` <i class="fa fa-pause-circle" aria-hidden="true"></i>`
+  tetrismp3.play()
+  pause = false
+  e.stopPropagation();
+}

@@ -58,7 +58,7 @@ body{
   height: 70%;
 flex-direction: row-reverse;
 }
-#gameoverscreen.popup{
+#gameoverscreen.popup , #resumescreen.popup{
    position: absolute;
     width: 25%;
     aspect-ratio: 1.5/1;
@@ -75,7 +75,7 @@ flex-direction: row-reverse;
     top: 40%;
     height: unset;
 }
-#gameoverscreen{
+#gameoverscreen,#resumescreen{
   width: 0%;
     position: absolute;
     top: -30%;
@@ -93,7 +93,7 @@ flex-direction: row-reverse;
    
   
 }
-#gameoverscreen.popup div:nth-child(2){
+#gameoverscreen.popup div:nth-child(2),#resumescreen.popup div:nth-child(2){
  color: black;
     background: white;
     width: 50%;
@@ -153,7 +153,7 @@ flex-direction: row-reverse;
      display: flex;
     margin:20px 0;
   }
-  #gameoverscreen.popup{
+  #gameoverscreen.popup, #resumescreen.popup{
     width: 76%;
     font-size: 20px;
   }
@@ -162,7 +162,7 @@ flex-direction: row-reverse;
 }
 
 
-  #gameoverscreen.popup div:nth-child(2){
+  #gameoverscreen.popup div:nth-child(2),#resumescreen.popup div:nth-child(2){
     color: black;
     background: white;
     width: 50%;
@@ -186,7 +186,7 @@ flex-direction: row-reverse;
   #scoreboard{
   width: 35vw;
 }
-  #gameoverscreen.popup{
+  #gameoverscreen.popup,#resumescreen.popup{
     width: 50%;
   }
   
